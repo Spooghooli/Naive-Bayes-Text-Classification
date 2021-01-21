@@ -53,6 +53,8 @@ def get_values_counts(data, feature_values, categories):
 
 
 if __name__ == "__main__":
-    data = load_dataset('0_9.txt')
+    data = []
+    data.append(load_dataset('0_9.txt'))
+    data.append(load_dataset('1_7.txt'))
     print(data)
 
