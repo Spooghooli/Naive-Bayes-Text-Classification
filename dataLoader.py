@@ -1,19 +1,18 @@
 import string
-# hm
-# hm
+
 def load_dataset(filename):
     f = open(filename, 'r')
     lines = f.readlines()
     f.close()
 
-    # f = open('stopwords.txt', encoding="utf8")
-    # stoplines = f.readlines()
-    # f.close()
-    # stopwords = {}
-    # for s in stoplines:
-    #     exclude = set('\n')
-    #     s = ''.join(ch for ch in s if ch not in exclude)
-    #     stopwords[s] = None
+    with open('imdb.vocab', encoding='utf8') as f:
+        stoplines = f.readlines()[0:50]
+    f.close()
+    stopwords = {}
+    for s in stoplines:
+        exclude = set('\n')
+        s = ''.join(ch for ch in s if ch not in exclude)
+        stopwords[s] = None
 
     dataset = []
     for line in lines:
@@ -23,9 +22,10 @@ def load_dataset(filename):
             exclude = set(string.punctuation)
             a = ''.join(ch for ch in a if ch not in exclude)
             a = a.lower()
-            # if a in stopwords:
-            #     continue
-            data.append(a)
+            if a in stopwords:
+                data.append(1)
+            else:
+                data.append(0)
         dataset.append(data)
     return dataset
 
