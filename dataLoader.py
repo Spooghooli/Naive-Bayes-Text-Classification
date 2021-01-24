@@ -1,11 +1,11 @@
 import string
 
-def load_dataset(filename):
+def load_dataset(filename, vocab):
     f = open(filename, 'r')
     lines = f.readlines()
     f.close()
 
-    with open('imdb.vocab', encoding='utf8') as f:
+    with open(vocab, encoding='utf8') as f:
         stoplines = f.readlines()[0:50]
     f.close()
     stopwords = {}
@@ -30,31 +30,9 @@ def load_dataset(filename):
     return dataset
 
 
-# def transpose(data):
-#     dataT = [[]] * len(data[0])
-#     for d in data:
-#         for i in range(len(d)):
-#             if d[i] not in dataT[i]:
-#                 dataT[i].append(d[i])
-#     return dataT
-
-
-
-# gia ka8e feature kai gia ka8e pi8ani timi tou feature a8roizei posa paradeigmata einai se ka8e katigoria
-def get_values_counts(data, feature_values, categories):
-    # categories -> a list of the possible categories
-    counter = []
-    for feature in feature_values:
-        counter.append(dict.fromkeys(feature, dict.fromkeys(categories, 0)))
-    for d in data:
-        for i in range(len(d) - 1):  # to d[-1] einai i apokrisi
-            counter[i].get(d[i])[d[-1]] += 1
-    return counter
-
-
 if __name__ == "__main__":
     data = []
-    data.append(load_dataset('0_9.txt'))
-    data.append(load_dataset('1_7.txt'))
+    data.append(load_dataset('0_9.txt', 'imdb.vocab'))
+    data.append(load_dataset('1_7.txt', 'imdb.vocab'))
     print(data)
 
