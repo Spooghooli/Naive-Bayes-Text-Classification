@@ -21,6 +21,27 @@ class Bayes:
             s = ''.join(ch for ch in s if ch not in exclude)
             stopwords[s] = None
 
+        # for w in words:
+        #     exclude = set(string.punctuation)
+        #     w = ''.join(ch for ch in w if ch not in exclude)
+        #     w = w.lower()
+        #     i += 1
+        #     if w in vocabI and w not in neg_vocab:
+        #         neg_vocab[w] = 1
+        #     elif w in vocabI and w in neg_vocab:
+        #         neg_vocab[w] += 1
+        #     else:
+        #         for v in vocabI:
+        #             if SequenceMatcher(None, w, v).ratio() > 0.7:
+        #                 if v in neg_vocab:
+        #                     neg_vocab[v] += 1
+        #                     print(v)
+        #                     break
+        #                 else:
+        #                     neg_vocab[v] = 1
+        #                     print(v)
+        #                     break
+
         dataset = []
         for line in lines:
             attributes = line.split(sep=' ')

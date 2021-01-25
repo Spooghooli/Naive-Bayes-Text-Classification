@@ -1,6 +1,5 @@
 import os
 import string
-from difflib import SequenceMatcher
 
 def load_dataset(filename, vocab):
     neg_vocab = {}
@@ -35,33 +34,17 @@ def load_dataset(filename, vocab):
                 for w in words:
                     w = w.split(sep=':')
                     neg_vocab[vocabI[int(w[0])]] += int(w[1])
-            # for w in words:
-            #     exclude = set(string.punctuation)
-            #     w = ''.join(ch for ch in w if ch not in exclude)
-            #     w = w.lower()
-            #     i += 1
-            #     if w in vocabI and w not in neg_vocab:
-            #         neg_vocab[w] = 1
-            #     elif w in vocabI and w in neg_vocab:
-            #         neg_vocab[w] += 1
-            #     else:
-            #         for v in vocabI:
-            #             if SequenceMatcher(None, w, v).ratio() > 0.7:
-            #                 if v in neg_vocab:
-            #                     neg_vocab[v] += 1
-            #                     print(v)
-            #                     break
-            #                 else:
-            #                     neg_vocab[v] = 1
-            #                     print(v)
-            #                     break
 
-    dictionary_items = neg_vocab.items()
-    sorted_items = sorted(dictionary_items)
-    print(sorted_items)
-    f = open("demofile3.txt", encoding='utf8' "a")
+    print(neg_vocab)
+    f = open("neg_vocab.txt", "a", encoding='utf8')
     for key, value in neg_vocab.items():
-        f.write('('+key+','+str(value)+')')
+        f.write(key+':'+str(value)+'\n')
+    f.close()
+
+    print(pos_vocab)
+    f = open("pos_vocab.txt", "a", encoding='utf8')
+    for key, value in pos_vocab.items():
+        f.write(key+':'+str(value)+'\n')
     f.close()
 
     for file in os.listdir(os.getcwd() + r'\neg'):
@@ -70,7 +53,6 @@ def load_dataset(filename, vocab):
             f.close()
             for line in lines:
                 words = line.split(sep=' ')
-                data = []
                 for w in words:
                     j += 1
     print(j)
@@ -81,7 +63,6 @@ def load_dataset(filename, vocab):
             f.close()
             for line in lines:
                 words = line.split(sep=' ')
-                data = []
                 for w in words:
                     i += 1
     print(i)
