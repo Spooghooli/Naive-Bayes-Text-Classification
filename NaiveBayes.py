@@ -77,7 +77,4 @@ class Bayes:
     #     return counter
 
     if __name__ == "__main__":
-        data = []
-        data.append(load_dataset('0_9.txt', 'imdb.vocab'))
-        data.append(load_dataset('1_7.txt', 'imdb.vocab'))
-        print(data)
+       load_dataset('0_9.txt', 'imdb.vocab')

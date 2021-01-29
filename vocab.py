@@ -1,7 +1,7 @@
 import os
 import string
 
-def load_dataset(filename, vocab):
+def load_dataset():
     neg_vocab = {}
     pos_vocab = {}
     vocabI = []
@@ -35,18 +35,6 @@ def load_dataset(filename, vocab):
                     w = w.split(sep=':')
                     neg_vocab[vocabI[int(w[0])]] += int(w[1])
 
-    print(neg_vocab)
-    f = open("neg_vocab.txt", "a", encoding='utf8')
-    for key, value in neg_vocab.items():
-        f.write(key+':'+str(value)+'\n')
-    f.close()
-
-    print(pos_vocab)
-    f = open("pos_vocab.txt", "a", encoding='utf8')
-    for key, value in pos_vocab.items():
-        f.write(key+':'+str(value)+'\n')
-    f.close()
-
     for file in os.listdir(os.getcwd() + r'\neg'):
         with open(os.path.join(os.getcwd() + r'\neg', file), encoding='utf8') as f:
             lines = f.readlines()
@@ -67,7 +55,40 @@ def load_dataset(filename, vocab):
                     i += 1
     print(i)
 
+    f = open("neg_vocab.txt", "a", encoding='utf8')
+    for key, value in neg_vocab.items():
+        f.write(key + ':' + str(value) + '\n')
+        neg_vocab[key] = value / j
+    f.close()
+
+    f = open("pos_vocab.txt", "a", encoding='utf8')
+    for key, value in pos_vocab.items():
+        f.write(key + ':' + str(value) + '\n')
+        pos_vocab[key] = value / i
+    f.close()
+
+    f_vocab = []
+    k = 0
+    f = open("final_vocab.txt", "a", encoding='utf8')
+    for w in vocabI:
+        word = w
+        f_vocab.append([word])
+        if word in pos_vocab:
+            w += '|' + str(pos_vocab[word])
+            f_vocab[vocabI.index(word)].append(pos_vocab[word])
+        else:
+            w += '|' + str(1/5844418)
+            f_vocab[vocabI.index(word)].append(1/5844418)
+        if word in neg_vocab:
+            w += '|' + str(neg_vocab[word])
+            f_vocab[vocabI.index(word)].append(neg_vocab[word])
+        else:
+            w += '|' + str(1/5844418)
+            f_vocab[vocabI.index(word)].append(1/5844418)
+        w += '\n'
+        f.write(w)
+
 
 if __name__ == "__main__":
-    load_dataset('0_9.txt', 'imdb.vocab')
+    load_dataset()
 
