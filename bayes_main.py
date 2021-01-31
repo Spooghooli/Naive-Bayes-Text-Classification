@@ -1,8 +1,25 @@
 import string
 import os
+from math import floor
+
 
 def get_vocabs(n, m):
-    f = open('final_vocab.txt', 'r', encoding='utf8')
+    choice = input("How much of the training data do you wish to use? \nAnswer 1 for 5%, 2 for 25%, 3 for 50%, 4 for 75%, 5 for 100%: ")
+    d = os.getcwd()
+    choice = int(choice)
+    if choice == 1:
+        d += r"\vocabs\5%"
+    if choice == 2:
+        d += r"\vocabs\25%"
+    if choice == 3:
+        d += r"\vocabs\50%"
+    if choice == 4:
+        d += r"\vocabs\75%"
+    if choice == 5:
+        d += r"\vocabs\100%"
+    d += r"\final_vocab.txt"
+
+    f = open('%s' % d, 'r', encoding='utf8')
     lines = f.readlines()[n:m]
     f.close()
 
@@ -19,7 +36,7 @@ def get_vocabs(n, m):
     # print(pos_vocab)
     # print(neg_vocab)
 
-    f = open('final_vocab.txt', 'r', encoding='utf8')
+    f = open('%s' % d, 'r', encoding='utf8')
     lines = f.readlines()
     f.close()
     for line in lines:
@@ -31,13 +48,19 @@ def get_vocabs(n, m):
 
     return [pos_vocab, neg_vocab, w_pos_vocab, w_neg_vocab]
 
-
-if __name__ == "__main__":
-    vocabs = get_vocabs(300, 5000)
-    cr = 0
-    fr = 0
-    for file in os.listdir(os.getcwd() + r'\test\pos'):
-        with open(os.path.join(os.getcwd() + r'\test\pos', file), encoding='utf8') as f:
+def bayes(path):
+    tp = 0
+    tn = 0
+    fp = 0
+    fn = 0
+    i = 0
+    limit = int(input("Set testing data limit (review number): "))
+    n = int(input("Set n: "))
+    m = int(input("Set m: "))
+    vocabs = get_vocabs(n, m)  # 300 5000
+    gen = (file for file in os.listdir(path + r'\pos') if i < limit)
+    for file in gen:
+        with open(os.path.join(path + r'\pos', file), encoding='utf8') as f:
             lines = f.readlines()
             f.close()
             pos_prob = 0.5
@@ -52,15 +75,18 @@ if __name__ == "__main__":
                         pos_prob *= float(vocabs[0][w])
                         neg_prob *= float(vocabs[1][w])
                     elif w in vocabs[2]:
-                        pos_prob *= (1-float(vocabs[2][w]))
-                        neg_prob *= (1-float(vocabs[3][w]))
+                        pos_prob *= (1 - float(vocabs[2][w]))
+                        neg_prob *= (1 - float(vocabs[3][w]))
             if pos_prob > neg_prob:
-                cr += 1
+                tp += 1
             else:
-                fr += 1
+                fp += 1
+        i += 1
 
-    for file in os.listdir(os.getcwd() + r'\test\neg'):
-        with open(os.path.join(os.getcwd() + r'\test\neg', file), encoding='utf8') as f:
+    i = 0
+    gen = (file for file in os.listdir(path + r'\neg') if i < limit)
+    for file in gen:
+        with open(os.path.join(path + r'\neg', file), encoding='utf8') as f:
             lines = f.readlines()
             f.close()
             pos_prob = 0.5
@@ -78,9 +104,23 @@ if __name__ == "__main__":
                         pos_prob *= (1 - float(vocabs[2][w]))
                         neg_prob *= (1 - float(vocabs[3][w]))
             if neg_prob > pos_prob:
-                cr += 1
+                tn += 1
             else:
-                fr += 1
+                fn += 1
+        i += 1
 
-    print(str(cr/100)+'%')
-    print(cr, fr)
+    accuracy = (tp + tn) / (tp + tn + fp + fn)
+    precision = (tp / (tp + fp))
+    recall = (tp / (tp + fn))
+    f1 = (2 * precision * recall) / (precision + recall)
+    print("Accuracy: " + str(floor(accuracy * 100)) + '%')
+    print("Precision: " + str(precision))
+    print("Recall: " + str(recall))
+    print("F1: " + str(f1))
+    print(tp, tn, fp, fn)
+
+if __name__ == "__main__":
+    print("----- Test Data -----")
+    bayes(os.getcwd() + r"\test")
+    print("----- Training Data -----")
+    bayes(os.getcwd())

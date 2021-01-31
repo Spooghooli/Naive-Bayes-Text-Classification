@@ -20,8 +20,11 @@ def load_dataset():
     print(vocabI)
 
     with open('labeledBow.feat', 'r') as f:
-        lines = f.readlines()
+        lines = f.readlines()[0:12500]
         f.close()
+        with open('labeledBow.feat', 'r') as f:
+            lines += f.readlines()[12501:25000]
+            f.close()
         for line in lines:
             words = line.split(sep=' ')
             if int(words[0]) > 5:
@@ -34,8 +37,10 @@ def load_dataset():
                 for w in words:
                     w = w.split(sep=':')
                     neg_vocab[vocabI[int(w[0])]] += int(w[1])
-
-    for file in os.listdir(os.getcwd() + r'\neg'):
+    k = 0
+    limit = 12500
+    gen = (file for file in os.listdir(os.getcwd() + r'\neg') if k < limit)
+    for file in gen:
         with open(os.path.join(os.getcwd() + r'\neg', file), encoding='utf8') as f:
             lines = f.readlines()
             f.close()
@@ -43,9 +48,12 @@ def load_dataset():
                 words = line.split(sep=' ')
                 for w in words:
                     j += 1
+        k += 1
     print(j)
 
-    for file in os.listdir(os.getcwd() + r'\pos'):
+    k = 0
+    gen = (file for file in os.listdir(os.getcwd() + r'\pos') if k < limit)
+    for file in gen:
         with open(os.path.join(os.getcwd() + r'\pos', file), encoding='utf8') as f:
             lines = f.readlines()
             f.close()
@@ -53,6 +61,7 @@ def load_dataset():
                 words = line.split(sep=' ')
                 for w in words:
                     i += 1
+        k += 1
     print(i)
 
     f = open("neg_vocab.txt", "a", encoding='utf8')
@@ -68,7 +77,6 @@ def load_dataset():
     f.close()
 
     f_vocab = []
-    k = 0
     f = open("final_vocab.txt", "a", encoding='utf8')
     for w in vocabI:
         word = w
@@ -77,14 +85,14 @@ def load_dataset():
             w += '|' + str(pos_vocab[word])
             f_vocab[vocabI.index(word)].append(pos_vocab[word])
         else:
-            w += '|' + str(1/5844418)
-            f_vocab[vocabI.index(word)].append(1/5844418)
+            w += '|' + str(1/(i+j))
+            f_vocab[vocabI.index(word)].append(1/(i+j))
         if word in neg_vocab:
             w += '|' + str(neg_vocab[word])
             f_vocab[vocabI.index(word)].append(neg_vocab[word])
         else:
-            w += '|' + str(1/5844418)
-            f_vocab[vocabI.index(word)].append(1/5844418)
+            w += '|' + str(1/(i+j))
+            f_vocab[vocabI.index(word)].append(1/(i+j))
         w += '\n'
         f.write(w)
 
