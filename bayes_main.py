@@ -113,11 +113,11 @@ def bayes(path):
     precision = (tp / (tp + fp))
     recall = (tp / (tp + fn))
     f1 = (2 * precision * recall) / (precision + recall)
-    print("Accuracy: " + str(floor(accuracy * 100)) + '%')
+    print("Accuracy: " + str(accuracy * 100))
     print("Precision: " + str(precision))
     print("Recall: " + str(recall))
     print("F1: " + str(f1))
-    print(tp, tn, fp, fn)
+    print(tp, tn, fp, fn, '\n')
 
 if __name__ == "__main__":
     print("----- Test Data -----")
